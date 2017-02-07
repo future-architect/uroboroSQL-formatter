@@ -1,0 +1,7 @@
+.project
+.settings
+*.pyc
+/.pydevproject
+/build
+/dist
+/usqlfmt.spec
