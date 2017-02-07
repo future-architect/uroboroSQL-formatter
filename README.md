@@ -37,6 +37,9 @@ WHERE
 AND	LONG_COLUMN_3	IS	NOT NULL
 ```
 
+uroboroSQL formatterはPython 2.7 および 3（3.5+）上で利用できます。  
+uroboroSQL formatter is compatible with Python versions 2.7 and 3 (3.5+).  
+
 ### EXEファイルの実行
 #### EXEファイルの実行方法
 1. コマンドプロンプトにて「usqlfmt.exe」があるフォルダまで移動します。
