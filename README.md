@@ -14,7 +14,7 @@ import uroborosqlfmt
 sql = u"""
 select column1 as column1, --column1
 column2 as column2 --column2
-,long_column_3 as long_long_column_3 --column3
+,long_column_3 as long_column_3 --column3
 from foo_table --table
 where column1 = 'sample' --column1
 and long_column_3 is not null
@@ -27,9 +27,9 @@ print(formatted)
 出力結果:
 ```text
 SELECT
-	COLUMN1			AS	COLUMN1				-- column1
-,	COLUMN2			AS	COLUMN2				-- column2
-,	LONG_COLUMN_3	AS	LONG_LONG_COLUMN_3	-- column3
+	COLUMN1			AS	COLUMN1			-- column1
+,	COLUMN2			AS	COLUMN2			-- column2
+,	LONG_COLUMN_3	AS	LONG_COLUMN_3	-- column3
 FROM
 	FOO_TABLE	-- table
 WHERE
