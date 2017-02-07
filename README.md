@@ -88,10 +88,10 @@ usqlfmt.exe -m directory C:/Documents/sqlfiles/inputfiles C:/Documents/sqlfiles/
 * TODO  
 -->
 
-### フューチャー株式会社
+### フューチャーアーキテクト株式会社
 * http://www.future.co.jp/  
 
-### フューチャー Tech Blog
+### フューチャーアーキテクト開発者ブログ - Tech Blog
 * https://future-architect.github.io/  
 
 ## ライセンス
