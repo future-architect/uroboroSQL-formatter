@@ -51,6 +51,9 @@ uroboroSQL formatter is compatible with Python versions 2.7 and 3 (3.5+).  
 [日本語Readme](https://github.com/future-architect/Sublime-uroboroSQL-formatter/blob/master/Readme.ja.md)
 
 ### EXEファイルの実行
+
+[release](https://github.com/future-architect/uroboroSQL-formatter/releases)から`usqlfmt.exe`をダウンロードし任意のフォルダに配置してください。
+
 #### EXEファイルの実行方法
 1. コマンドプロンプトにて「usqlfmt.exe」があるフォルダまで移動します。
 1. 下記の実行引数を入力しEnterを押下します。
