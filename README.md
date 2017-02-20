@@ -13,8 +13,8 @@ import uroborosqlfmt
 
 sql = u"""
 select column1 as column1, --column1
-column2 as column2 --column1
-,long_column_3 as long_long_column_3 --column3
+column2 as column2 --column2
+,long_column_3 as long_column_3 --column3
 from foo_table --table
 where column1 = 'sample' --column1
 and long_column_3 is not null
@@ -27,15 +27,18 @@ print(formatted)
 出力結果:
 ```text
 SELECT
-	COLUMN1			AS	COLUMN1				-- column1
-,	COLUMN2			AS	COLUMN2				-- column1
-,	LONG_COLUMN_3	AS	LONG_LONG_COLUMN_3	-- column3
+	COLUMN1			AS	COLUMN1			-- column1
+,	COLUMN2			AS	COLUMN2			-- column2
+,	LONG_COLUMN_3	AS	LONG_COLUMN_3	-- column3
 FROM
 	FOO_TABLE	-- table
 WHERE
 	COLUMN1			=	'sample'	-- column1
 AND	LONG_COLUMN_3	IS	NOT NULL
 ```
+
+uroboroSQL formatterはPython 2.7 および 3（3.5+）上で利用できます。  
+uroboroSQL formatter is compatible with Python versions 2.7 and 3 (3.5+).  
 
 ### SublimeText3のプラグインの利用
 
@@ -98,10 +101,10 @@ usqlfmt.exe -m directory C:/Documents/sqlfiles/inputfiles C:/Documents/sqlfiles/
 * TODO  
 -->
 
-### フューチャー株式会社
+### フューチャーアーキテクト株式会社
 * http://www.future.co.jp/  
 
-### フューチャー Tech Blog
+### フューチャーアーキテクト開発者ブログ - Tech Blog
 * https://future-architect.github.io/  
 
 ## ライセンス
