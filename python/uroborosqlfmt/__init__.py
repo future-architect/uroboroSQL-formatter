@@ -17,7 +17,7 @@ from uroborosqlfmt import filters, config
 
 LOCK = Lock()
 
-def format_sql(sql, local_config):
+def format_sql(sql, local_config = config.LocalConfig()):
 
     LOCK.acquire()
     try:

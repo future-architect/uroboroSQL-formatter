@@ -18,7 +18,7 @@ where column1 = 'sample' --column1
 and long_column_3 is not null
 """
 
-    formatted = uroborosqlfmt.format_sql(sql, LocalConfig())
+    formatted = uroborosqlfmt.format_sql(sql)
 
     print(formatted)
 
