@@ -37,6 +37,16 @@ WHERE
 AND	LONG_COLUMN_3	IS	NOT NULL
 ```
 
+### SublimeText3のプラグインの利用
+
+`Package Control`の`Install Package`から  
+**uroboroSQL Formatter**を検索しInstallを行ってください。
+
+設定方法や、利用方法は下記のgithubリポジトリのREADMEをご覧ください。  
+
+[Sublime-uroboroSQL-formatter](https://github.com/future-architect/Sublime-uroboroSQL-formatter)  
+[日本語Readme](https://github.com/future-architect/Sublime-uroboroSQL-formatter/blob/master/Readme.ja.md)
+
 ### EXEファイルの実行
 #### EXEファイルの実行方法
 1. コマンドプロンプトにて「usqlfmt.exe」があるフォルダまで移動します。
