@@ -388,8 +388,11 @@ class _WordsTokenHitTests(object):
     def _test_word(self, word, token):
         return tu.equals_ignore_case(token.value, word) and (token.ttype in T.Name or token.ttype in T.Keyword)
 
-    def adj_tokens(self, tokens):
+    def adj_tokens(self, tokens, **options):
         return tokens
+
+    def init_group_token(self, token):
+        pass
     # pylint: enable=unused-argument
 
 class _SimpleWordsTokenHitTests(_WordsTokenHitTests):
@@ -474,6 +477,9 @@ class _BaseWordsGrouping(object):
                 return self.hittests.is_completed(self.target_tokens)
 
             def add_prev_tokens(self, prevs):
+                """
+                    前tokenを含める処理
+                """
                 adds = self.hittests.get_add_prev_tokens(self.target_tokens, prevs)
                 self.tokens = adds + self.tokens
                 self.target_tokens = adds + self.target_tokens
@@ -490,7 +496,9 @@ class _BaseWordsGrouping(object):
                 return hittest(token)
 
             def grouping(self):
-                tokens = self.hittests.adj_tokens(self.tokens)
+                tokens = self.hittests.adj_tokens(self.tokens,
+                    flatten_tokens_next = lambda tkn: tu.flatten_tokens_next(self0.curr_stmt, tkn),
+                )
                 tfst = tokens[0]
 
                 cls = self0.get_group_class()
@@ -502,6 +510,7 @@ class _BaseWordsGrouping(object):
                     _move_append_token(tgp, tkn)
 
                 tgp.value = tgp._to_string()
+                self.hittests.init_group_token(tgp)
                 return tgp
 
         if not isinstance(tlist, self.get_group_class()):
@@ -827,98 +836,301 @@ class GroupingUnion(_BaseWordsGrouping):
     def get_group_class(self):
         return Union
 
+
+class _JoinNonUsingWordsTokenHitTests(_WordsTokenHitTests):
+    def __init__(self, using_target):
+        self.using_target = using_target
+
+    def _is_join_keyword(self, token):
+        """
+            JOIN判定
+        """
+        return tu.endswith_ignore_case(token.value, "JOIN") \
+                    and (token.ttype in T.Name or token.ttype in T.Keyword)
+
+    def __get_joins(self, tokens):
+        """
+            JOIN句
+        """
+
+        joins = []
+        completed = False
+
+        first_token = tokens[0]
+        if self._is_join_keyword(first_token):
+            joins.append(first_token)
+            completed = True
+        elif self._test_word("NATURAL", first_token):
+            joins.append(first_token)
+            if len(tokens) > 1:
+                second_token = tokens[1]
+                if self._is_join_keyword(second_token):
+                    completed = True
+                    joins.append(second_token)
+        else:
+            return [], tokens[:], False # JOINではない
+
+
+        return joins, tokens[len(joins):], completed
+
+    def __get_identifier(self, tokens):
+        """
+            identifier
+        """
+        def get(index):
+            if len(tokens) > index:
+                return tokens[index]
+            return None
+
+        index = 0
+
+
+        identifier = []
+
+        tkn = get(index)
+        if not tkn:
+            return [], tokens[:], False # JOINではない
+
+        # table name or query
+        if tkn.ttype in T.Name:
+            identifier.append(tkn)
+            nexttkn = get(index + 1)
+            if nexttkn and tu.is_dot(nexttkn): # SCHEMA.TABLE ?
+                index += 1
+                identifier.append(nexttkn)
+                nexttkn = get(index + 1)
+                if not nexttkn:
+                    return identifier, tokens[len(identifier):], False # 未完成
+                if nexttkn.ttype in T.Name:
+                    index += 1
+                    identifier.append(nexttkn)
+                else:
+                    return [], tokens[:], False # JOINではない
+        elif tu.is_parenthesis(tkn):
+            identifier.append(tkn)
+        else:
+            return [], tokens[:], False # JOINではない
+
+        index += 1
+
+        tkn = get(index)
+        if not tkn:
+            return identifier, tokens[len(identifier):], True # 終了
+
+        # AS
+        if tu.is_as_keyword(tkn):
+            identifier.append(tkn)
+            index += 1
+            tkn = get(index)
+
+        if not tkn:
+            return identifier, tokens[len(identifier):], False # AS の次が無い
+
+        # ALIAS
+        if not tkn.ttype in T.Name:
+            return [], tokens[:], False # JOINではない
+
+        if self._test_word("USING", tkn):
+            return identifier, tokens[len(identifier):], True # 終了
+
+
+        identifier.append(tkn)
+        return identifier, tokens[len(identifier):], True # 終了
+
+
+    def __get_using(self, tokens):
+
+        if tokens:
+            token = tokens[0]
+            if self._test_word("USING", token):
+                return [token], tokens[1:], True
+        return [], tokens[:], False # USINGは存在しない
+
+    def __get_using_parenthesis(self, tokens):
+
+        if tokens:
+            token = tokens[0]
+            if tu.is_parenthesis(token):
+                return [token], tokens[1:], True
+        return [], tokens[:], False # USINGの次の括弧は存在しない
+
+    def __test(self, tokens):
+
+        joins, tokens, _ = self.__get_joins(tokens)
+        if not joins:
+            return False
+        if not tokens:
+            return True
+
+        identifier, tokens, _ = self.__get_identifier(tokens)
+
+        if not identifier:
+            return False
+        if not tokens:
+            # すべて消化されたいる場合OK
+            return True
+
+        if not self.using_target:
+            return False
+
+        using, tokens, _ = self.__get_using(tokens)
+
+        if not using:
+            return False
+        if not tokens:
+            return True
+
+        using_parenthesis, tokens, _ = self.__get_using_parenthesis(tokens)
+
+        if not using_parenthesis:
+            return False
+        if not tokens:
+            # すべて消化されたいる場合OK
+            return True
+
+        return False
+
+    def first_test(self, token):
+        joins, _, _ = self.__get_joins([token])
+        return joins
+
+    def get_next_test(self, tokens):
+        return lambda t: self.__test(tokens + [t])
+
+    def is_completed(self, tokens):
+        return False
+
+    def get_add_prev_tokens(self, tokens, prevs):
+        return []
+
+    def is_completed_group(self, tokens, curr_stmt):
+        joins, tokens, completed = self.__get_joins(tokens)
+        if (not joins) or (not completed):
+            return False
+
+        identifier, tokens, completed = self.__get_identifier(tokens)
+
+        if (not identifier) or (not completed):
+            return False
+
+        if not self.using_target:
+            if not tokens:
+                # すべて消化されている場合OK
+                return True
+
+        using, tokens, completed = self.__get_using(tokens)
+
+        if (not using) or (not completed):
+            return False
+
+        using_parenthesis, tokens, completed = self.__get_using_parenthesis(tokens)
+
+        if (not using_parenthesis) or (not completed):
+            return False
+        if not tokens:
+            # すべて消化されている場合OK
+            return True
+
+        return False
+
+
+
+    def __get_next_disable(self, flatten_tokens_next, tgt):
+        for tkn in flatten_tokens_next(tgt):
+            if tu.is_enable(tkn):
+                return None
+            if tkn.parent and tu.is_comment(tkn.parent):
+                return tkn.parent
+            else:
+                return tkn
+
+
+    def adj_tokens(self, tokens, flatten_tokens_next, **_):
+        """
+            後ろのコメント・空白を含めてgroupingする
+        """
+        org_tokens = tokens
+        _, tokens, _ = self.__get_joins(tokens)
+        identifier, tokens, _ = self.__get_identifier(tokens)
+        if tokens:
+            return org_tokens
+
+        # identifierで終了している場合のみ実行
+
+        need_adj = False
+        adj_tokens = []
+        tkn = self.__get_next_disable(flatten_tokens_next, identifier[-1])
+        while tkn:
+            if tu.is_comment(tkn):
+                need_adj = True
+            adj_tokens.append(tkn)
+            tkn = self.__get_next_disable(flatten_tokens_next, adj_tokens[-1])
+
+        if need_adj:
+            return org_tokens + adj_tokens
+        else:
+            return org_tokens
+
+    def __build_useingjoin_value(self, token, tokens):
+        text = tokens[0].value
+        for tkn in tokens[1:]:
+            text += tkn.value
+            token.tokens.remove(tkn)
+        return text
+
+    def __bind_tokens(self, token, tokens):
+        token.usingtoken = None
+        token.usingparenthesistoken = None
+        joins, tokens, _ = self.__get_joins(tokens)
+        identifier, tokens, _ = self.__get_identifier(tokens)
+
+        token.jointoken = joins[0]
+        token.jointoken.value = self.__build_useingjoin_value(token, token.tokens_between(joins[0], joins[-1]))
+
+        if not self.using_target:
+            token.identifiertoken = token.group_tokens(
+                    sql.Identifier,
+                    token.tokens_between(identifier[0], token.tokens[-1])
+
+                )
+            return
+        else:
+            using, tokens, _ = self.__get_using(tokens)
+            using_parenthesis, tokens, _ = self.__get_using_parenthesis(tokens)
+            token.identifiertoken = token.group_tokens(
+                    sql.Identifier,
+                    token.tokens_between(identifier[0], using[0], exclude_end=True)
+
+                )
+
+            token.usingtoken = using[0]
+            token.usingparenthesistoken = using_parenthesis[0]
+
+    def init_group_token(self, token):
+        token.usingtoken = None
+        token.usingparenthesistoken = None
+
+        self.__bind_tokens(token, token.get_target_tokens())
+
+
+
+
+
 class GroupingJoin(_BaseWordsGrouping):
     """
         JOIN系のグルーピングを拡張
     """
 
     GROUP_JUDGE_SET = [
-        (
-            lambda token: tu.endswith_ignore_case(token.value, "JOIN") \
-                    and (token.ttype in T.Name or token.ttype in T.Keyword),
-            (T.Name, tu.is_parenthesis),
-            T.Name,
-            "USING",
-            tu.is_parenthesis,
-        ),(
-            lambda token: tu.endswith_ignore_case(token.value, "JOIN") \
-                    and (token.ttype in T.Name or token.ttype in T.Keyword),
-            (T.Name, tu.is_parenthesis),
-            "USING",
-            tu.is_parenthesis,
-        ),(
-            lambda token: tu.endswith_ignore_case(token.value, "JOIN") \
-                    and (token.ttype in T.Name or token.ttype in T.Keyword),
-            (T.Name, tu.is_parenthesis),
-            T.Name,
-        ),(
-            lambda token: tu.endswith_ignore_case(token.value, "JOIN") \
-                    and (token.ttype in T.Name or token.ttype in T.Keyword),
-            (T.Name, tu.is_parenthesis),
-        ),(
-            "NATURAL",
-            lambda token: tu.endswith_ignore_case(token.value, "JOIN") \
-                    and (token.ttype in T.Name or token.ttype in T.Keyword),
-            (T.Name, tu.is_parenthesis),
-            T.Name
-        ),(
-            "NATURAL",
-            lambda token: tu.endswith_ignore_case(token.value, "JOIN") \
-                    and (token.ttype in T.Name or token.ttype in T.Keyword),
-            (T.Name, tu.is_parenthesis)
-        ),
+        _JoinNonUsingWordsTokenHitTests(using_target=True),
+        _JoinNonUsingWordsTokenHitTests(using_target=False)
     ]
 
 
     def get_group_class(self):
         return Join
 
-    def init_group_token(self, token, idx):
-        token.usingtoken = None
-        token.usingparenthesistoken = None
-        if idx == 0:
-            token.jointoken = token._token_word(0)
-            token.identifiertoken = token.group_tokens(
-                    sql.Identifier,
-                    token.tokens_between(token._token_word(1), token._token_word(2))
-                )
-            token.usingtoken = token._token_word(3)
-            token.usingparenthesistoken = token._token_word(4)
-        elif idx == 1:
-            token.jointoken = token._token_word(0)
-            token.identifiertoken = token.group_tokens(sql.Identifier, [token._token_word(1)])
-            token.usingtoken = token._token_word(2)
-            token.usingparenthesistoken = token._token_word(3)
-        elif idx == 2:
-            token.jointoken = token._token_word(0)
-            token.identifiertoken = token.group_tokens(
-                    sql.Identifier,
-                    token.tokens_between(token._token_word(1), token._token_word(2))
-                )
-        elif idx == 3:
-            token.jointoken = token._token_word(0)
-            token.identifiertoken = token.group_tokens(sql.Identifier, [token._token_word(1)])
-        elif idx == 4:
-            token.jointoken = token._token_word(1)
-            tokens = token.tokens_between(token._token_word(0), token._token_word(1))
-            text = ''
-            for tkn in tokens[:-1]:
-                text += tkn.value
-                token.tokens.remove(tkn)
-            token.jointoken.value = text + token.jointoken.value
-            token.identifiertoken = token.group_tokens(
-                    sql.Identifier,
-                    token.tokens_between(token._token_word(2), token._token_word(3))
-                )
-        elif idx == 5:
-            token.jointoken = token._token_word(1)
-            tokens = token.tokens_between(token._token_word(0), token._token_word(1))
-            text = ''
-            for tkn in tokens[:-1]:
-                text += tkn.value
-                token.tokens.remove(tkn)
-            token.jointoken.value = text + token.jointoken.value
-            token.identifiertoken = token.group_tokens(sql.Identifier,[token._token_word(2)])
+
 
 class GroupingMergeWhen(_BaseWordsGrouping):
     """
@@ -988,20 +1200,7 @@ class _WithSelectionTokenHitTests(_WordsTokenHitTests):
         return self.query_parenthesis_test(lasttoken)
 
 
-class GroupingWith(_BaseWordsGrouping):
-    """
-        WITH句のグルーピングを拡張
-    """
-
-    GROUP_JUDGE_SET = [
-        _WithSelectionTokenHitTests(),
-    ]
-
-    def get_group_class(self):
-        return With
-
-
-    def init_group_token(self, token, idx):
+    def init_group_token(self, token):
         tokens = token.get_target_tokens()
         with_token = tokens[0]
         start_prev = with_token
@@ -1017,6 +1216,21 @@ class GroupingWith(_BaseWordsGrouping):
         start = tu.token_next_enable(token, with_token)
         end = tu.token_prev_enable(token)
         token.group_tokens(sql.IdentifierList, token.tokens_between(start, end))
+
+
+class GroupingWith(_BaseWordsGrouping):
+    """
+        WITH句のグルーピングを拡張
+    """
+
+    GROUP_JUDGE_SET = [
+        _WithSelectionTokenHitTests(),
+    ]
+
+    def get_group_class(self):
+        return With
+
+
 
 class _SpecialFunctionParameterTokenHitTests(_SimpleWordsTokenHitTests):
 
@@ -1182,7 +1396,7 @@ class _GroupingCalculationTokenHitTests(_WordsTokenHitTests):
         tokens = [t for t in tokens if tu.is_enable]
         return len(tokens) > 2
 
-    def adj_tokens(self, tokens):
+    def adj_tokens(self, tokens, **_):
         for i, tkn in list(enumerate(tokens))[::-1]:
             if tu.is_enable(tkn):
                 return tokens[:i + 1]
