@@ -592,7 +592,13 @@ def is_enable(token):
     """
         有効Token判定（コメント・空白以外）
     """
-    return (not token.is_whitespace()) and (not is_comment(token))
+    if token.is_whitespace():
+        return False
+    if is_comment(token):
+        return False
+    if token.parent and is_comment(token.parent):
+        return False
+    return True
 
 
 def find_comparison_operator_words(tokens):
