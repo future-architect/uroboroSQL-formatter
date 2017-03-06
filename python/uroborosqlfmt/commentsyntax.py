@@ -25,9 +25,9 @@ class UroboroSqlCommentSyntax(CommentSyntax):
         tokens = token.tokens
         if len(tokens) >= 3 :
             comment = tokens[1].value
-            if comment.strip() == "_SQL_IDENTIFIER_":
+            if comment.strip() == "_SQL_ID_" or comment.strip() == "_SQL_IDENTIFIER_":
                 return EngineComment.sql_identifier # _SQL_IDENTIFIER_
-            if tu.startswith_ignore_case(comment, ("IF", "ELIF", "ELSE", "END")):
+            if tu.startswith_ignore_case(comment, ("IF", "ELIF", "ELSE", "END", "BEGIN")):
                 return EngineComment.syntax
             if comment.strip() == comment and (not comment.startswith("*")) and (not comment.startswith("+")):
                 return EngineComment.param # param

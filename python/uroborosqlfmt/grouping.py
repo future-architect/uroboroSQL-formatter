@@ -179,6 +179,9 @@ def re_group_function(stmt):
         SET(A,B,・・・)
         と記述するとSET句がFunction扱いになるのを修正する（バグ）
 
+        AND(A = B)
+        と記述するとAND句がFunction扱いになるのを修正する（バグ）
+
         INSERT INTO TABLE1(COL1,COL2,COL3)
         及び
         INSERT INTO SC.TABLE1(COL1,COL2,COL3)
@@ -282,10 +285,26 @@ def re_group_function(stmt):
         """
             functionを分解
         """
-        _remove_split_token(tlist, parent)
+        return _remove_split_token(tlist, parent)
+
+    def _split_function_for_keyword(tlist, parent):
+        """
+            functionを分解 （KEY WORD用）
+        """
+        keyword_token = next(tlist.flatten())
+        keyword_token.ttype = T.Keyword # なぜかKeywordにならないときがある
+        target = _split_function(tlist, parent)
+        # identifier扱いされていることがある
+        while keyword_token.parent \
+                and len(keyword_token.parent.tokens) == 1 \
+                and tu.is_identifier(keyword_token.parent):
+            target = _remove_split_token(keyword_token.parent, keyword_token.parent.parent)
+        return target
 
     def proc(tlist, parent):
         [proc(sgroup, tlist) for sgroup in tlist.get_sublists()]
+
+
 
         if tu.is_function(tlist):
             if tu.equals_ignore_case(tu.token_next_enable(tlist).value, "FROM"): # FROM句がfunction扱いされている
@@ -307,25 +326,17 @@ def re_group_function(stmt):
             elif tu.equals_ignore_case(tu.token_next_enable(tlist).value, "UNION"): # UNIONがfunction扱いされている
                 _split_function(tlist, parent)
             elif tu.equals_ignore_case(tu.token_next_enable(tlist).value, "ON"): # ONがfunction扱いされている
-                keyword_token = next(tlist.flatten())
-                keyword_token.ttype = T.Keyword # なぜかKeywordにならないときがある
-                _split_function(tlist, parent)
-                # identifier扱いされていることがある
-                while keyword_token.parent \
-                        and len(keyword_token.parent.tokens) == 1 \
-                        and tu.is_identifier(keyword_token.parent):
-                    _remove_split_token(keyword_token.parent, keyword_token.parent.parent)
+                _split_function_for_keyword(tlist, parent)
             elif tu.equals_ignore_case(tu.token_next_enable(tlist).value, "USING"): # USINGがfunction扱いされている
                 _split_function(tlist, parent)
-            elif tu.equals_ignore_case(tu.token_next_enable(tlist).value, "SET"): # SETがfunction扱いされている
-                keyword_token = next(tlist.flatten())
-                keyword_token.ttype = T.Keyword # なぜかKeywordにならないときがある
-                _split_function(tlist, parent)
-                # identifier扱いされていることがある
-                while keyword_token.parent and \
-                        len(keyword_token.parent.tokens) == 1 and \
-                        tu.is_identifier(keyword_token.parent):
-                    _remove_split_token(keyword_token.parent, keyword_token.parent.parent)
+            elif tu.equals_ignore_case(tu.token_next_enable(tlist).value, "SET"): # SETがfunction扱いされている \
+                _split_function_for_keyword(tlist, parent)
+            elif tu.equals_ignore_case(tu.token_next_enable(tlist).value, "AND") \
+                or tu.equals_ignore_case(tu.token_next_enable(tlist).value, "OR"): # AND/ORがfunction扱いされている
+                target = _split_function_for_keyword(tlist, parent)[0]
+                # スペース挿入
+                target.parent.insert_after(target, sql.Token(T.Whitespace, "\t"))
+
 
     proc = SqlFormatterException.to_wrap_try_except(proc, 0)
     proc(stmt, None)
