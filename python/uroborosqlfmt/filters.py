@@ -969,6 +969,25 @@ class CustomReindentFilter(ReindentFilter):
 
             return False
 
+        def is_with_query_cols(tlist):
+            """
+                WITHのqueryカラム名括弧判定
+            """
+            parent = tlist.parent
+            if parent and tu.is_identifier(parent):
+                nametoken = tu.token_prev_enable(parent, tlist)
+                if not nametoken:
+                    return False
+                if not tu.is_identifier(nametoken) and not nametoken.ttype in T.Name:
+                    return False
+
+                parent = parent.parent
+                if parent and tu.is_identifier_list(parent):
+                    parent = parent.parent
+                    if parent and tu.is_with(parent):
+                        return True
+            return False
+
         def is_need_shift(tlist):
             """
                 閉じ括弧「)」の前が改行されている場合shiftさせる
@@ -1013,6 +1032,8 @@ class CustomReindentFilter(ReindentFilter):
             self.__process_parenthesis_for_insert(tlist)
         elif is_include_join(tlist): # JOIN句の括弧
             self.__process_parenthesis_for_jointables(tlist)
+        elif is_with_query_cols(tlist): # WITH句の括弧
+            self.__process_parenthesis_for_with_query_cols(tlist)
         elif tu.is_enum_parenthesis(tlist):
             if self._is_include_format_target_identifire_list_parenthesis(tlist):
                 self.__process_parenthesis_for_identifier_list(tlist) # identifierlistのフォーマットを期待した処理
@@ -1072,6 +1093,18 @@ class CustomReindentFilter(ReindentFilter):
 
         self.indent -= 1
 
+    def __process_parenthesis_for_with_query_cols(self, tlist):
+        """
+            WITHのqueryカラム名
+        """
+        open_punc = tlist.token_next_match(0, T.Punctuation, '(')
+        self.indent += 1
+        tlist.insert_after(open_punc, self.nl())
+        self._process_default(tlist)
+
+        close_punc = tlist.token_next_match(open_punc, T.Punctuation, ')')
+        tlist.insert_before(close_punc, self.nl())
+        self.indent -= 1
 
     def __process_parenthesis_for_insert(self, tlist):
         open_punc = tlist.token_next_match(0, T.Punctuation, '(')
