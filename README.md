@@ -5,8 +5,12 @@
 uroboroSQL formatterは、フューチャーアーキテクトが作成するSQLコーディング規約に従い、SQL文を整形するツールです。  
 SQL文のインデント、改行、大文字・小文字の区分などを即時変換し、可読性・管理性を高めます。
 
+[uroboroSQL](https://github.com/future-architect/uroborosql)のために作られたものですが、DBFluteやDOMAといった2Way-SQLをサポートするライブラリをお使いの方でも利用できます。
+
 ## 利用方法
+
 ### 利用例
+
 Python:
 ```python
 import uroborosqlfmt
@@ -55,11 +59,13 @@ uroboroSQL formatter is compatible with Python versions 2.7 and 3 (3.5+).  
 [release](https://github.com/future-architect/uroboroSQL-formatter/releases)から`usqlfmt.exe`をダウンロードし任意のフォルダに配置してください。
 
 #### EXEファイルの実行方法
+
 1. コマンドプロンプトにて「usqlfmt.exe」があるフォルダまで移動します。
 1. 下記の実行引数を入力しEnterを押下します。
 ※引数とファイルパスは適切に変更してください。
 
 #### 実行引数
+
 ```bash
 usqlfmt.exe input_path output_path
 ```
@@ -88,6 +94,7 @@ optional arguments:
 ```
 
 #### 例
+
 1つのファイルを対象に整形する場合:
 ```text
 usqlfmt.exe -m file C:/Documents/sqlfiles/inputfiles/test.sql C:/Documents/sqlfiles/output/files
@@ -99,10 +106,14 @@ usqlfmt.exe -m directory C:/Documents/sqlfiles/inputfiles C:/Documents/sqlfiles/
 ```
 
 ## 関連情報
+
 <!-- 
 ### フューチャーアーキテクトのコーディング規約
 * TODO  
 -->
+### uroboroSQL
+
+* https://github.com/future-architect/uroborosql
 
 ### フューチャーアーキテクト株式会社
 * http://www.future.co.jp/  
