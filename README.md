@@ -73,6 +73,7 @@ usqlfmt.exe input_path output_path
 ```text
 usage: usqlfmt [-h] [-v] [-m {file,directory}] [-N] [-B]
                [-c {uroborosql,doma2,uroboro,doma}]
+               [-r reserved_words_file_path]
                input_path output_path
 
 uroboroSQL formatter API
@@ -91,6 +92,23 @@ optional arguments:
                         SQLでバックスラッシュによるエスケープシーケンスを使用している.
   -c {uroborosql,doma2,uroboro,doma}, --comment_syntax {uroborosql,doma2,uroboro,doma}
                         コメントのシンタックス形式を選択する.
+  -r reserved_words_file_path, --reserved_words_file_path reserved_words_file_path
+                        予約語一覧ファイルに存在する予約語のみを大文字変換するオプション.
+                        予約語一覧ファイルのファイルパスを指定する.
+                        なお、予約語のみを大文字にしたい場合は「-N」オプション指定せず、当オプションを指定すること。
+                        （予約語一覧ファイルはユーザーが提供すること.また、予約語一覧は「改行区切り」とすること.）
+```
+
+#### 予約語一覧ファイルの例
+
+予約語一覧は「改行区切り」とすること：
+```text
+SELECT
+INSERT
+FROM
+AS
+・・・
+・・・
 ```
 
 #### 例
@@ -103,6 +121,11 @@ usqlfmt.exe -m file C:/Documents/sqlfiles/inputfiles/test.sql C:/Documents/sqlfi
 ディレクトリを対象に整形する場合（複数ファイル指定）:
 ```text
 usqlfmt.exe -m directory C:/Documents/sqlfiles/inputfiles C:/Documents/sqlfiles/output/files
+```
+
+1つのファイルを対象に整形するとともに、予約語のみ大文字に変換する場合:
+```text
+usqlfmt.exe -m file C:/Documents/sqlfiles/inputfiles/test.sql C:/Documents/sqlfiles/output/files -r C:/Documents/sqlfiles/reserved_words_list.txt
 ```
 
 ## 関連情報

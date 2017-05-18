@@ -20,9 +20,10 @@ class Test(unittest.TestCase):
         self.assertEqual(args.nochange_case, False)
         self.assertEqual(args.escapesequence_u005c, False)
         self.assertEqual(args.comment_syntax, 'uroborosql')
+        self.assertEqual(args.reserved_words_file_path, None)
 
     def test_args(self):
-        args = api._parse_args('input output -m directory -N -B -c doma'.split())
+        args = api._parse_args('input output -m directory -N -B -c doma -r reserved_word_file'.split())
 
         self.assertEqual(args.input_path, 'input')
         self.assertEqual(args.output_path, 'output')
@@ -30,6 +31,7 @@ class Test(unittest.TestCase):
         self.assertEqual(args.nochange_case, True)
         self.assertEqual(args.escapesequence_u005c, True)
         self.assertEqual(args.comment_syntax, 'doma')
+        self.assertEqual(args.reserved_words_file_path, 'reserved_word_file')
 
     def test_help(self):
         def test1():
