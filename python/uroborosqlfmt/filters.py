@@ -1786,3 +1786,38 @@ def is_zen(cval):
 
 def is_inc_cr(token):
     return token.is_whitespace() and ("\n" in token.value or "\r" in token.value)
+
+'''
+ReservedWordCaseFilter is used to convert Reserved words
+which are provided by a user.This class compares tokens
+with the reserved words.
+'''
+class ReservedWordCaseFilter():
+    ttype = None
+
+    def __init__(self, local_config, case=None):
+        self.input_reserved_words = [word.lower() for word in local_config.input_reserved_words]
+        if case is None:
+            case = 'upper'
+        assert case in ['lower', 'upper', 'capitalize']
+        # for jython str.upper()
+        # self.convert = getattr(str, case)
+        def get_convert():
+            import sys
+            if sys.version_info[0] < 3:
+                unicodecase = getattr(unicode, case)
+                def convert(s):
+                    if isinstance(s, str):
+                        return unicodecase(s.decode('utf-8')).encode('utf-8')
+                    else:
+                        return unicodecase(s)
+                return convert
+            else:
+                return getattr(str, case)
+        self.convert = get_convert()
+
+    def process(self, stack, stream):
+        for ttype, value in stream:
+            if value in self.input_reserved_words:
+                value = self.convert(value)
+            yield ttype, value
