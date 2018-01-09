@@ -4,7 +4,7 @@
 
 
 * SublimeText3  
-[![Package Control](https://img.shields.io/badge/dynamic/json.svg?label=package%20control&colorB=fe7d37&query=$.versions[0].version&uri=https%3A%2F%2Fpackagecontrol.io%2Fpackages%2FuroboroSQL%2520Formatter.json&maxAge=3600) ![Package Control](https://img.shields.io/packagecontrol/dt/uroboroSQL%20Formatter.svg)](https://packagecontrol.io/packages/uroboroSQL%20Formatter)    
+[![Package Control](https://img.shields.io/github/release/future-architect/Sublime-uroboroSQL-formatter.svg?label=package%20control) ![Package Control](https://img.shields.io/packagecontrol/dt/uroboroSQL%20Formatter.svg)](https://packagecontrol.io/packages/uroboroSQL%20Formatter)    
 * IntelliJ   
 [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/v/9614.svg) ![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/9614.svg)](https://plugins.jetbrains.com/plugin/9614)   
 * Eclipse  
