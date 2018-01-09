@@ -140,13 +140,12 @@ usqlfmt.exe -m file C:/Documents/sqlfiles/inputfiles/test.sql C:/Documents/sqlfi
 
 ## 関連情報
 
-<!-- 
-### フューチャーアーキテクトのコーディング規約
-* TODO  
--->
 ### uroboroSQL
 
 * https://github.com/future-architect/uroborosql
+
+### Future Enterprise Coding Standards
+* https://future-architect.github.io/coding-standards/
 
 ### フューチャーアーキテクト株式会社
 * http://www.future.co.jp/  
