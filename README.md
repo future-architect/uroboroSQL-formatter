@@ -4,14 +4,12 @@
 
 
 * SublimeText3  
-    [![Package Control](https://img.shields.io/packagecontrol/dt/uroboroSQL%20Formatter.svg)](https://packagecontrol.io/packages/uroboroSQL%20Formatter)    
+    [![Package Control](https://img.shields.io/badge/dynamic/json.svg?label=package%20control&colorB=fe7d37&query=$.versions[0].version&uri=https%3A%2F%2Fpackagecontrol.io%2Fpackages%2FuroboroSQL%2520Formatter.json&maxAge=3600) ![Package Control](https://img.shields.io/packagecontrol/dt/uroboroSQL%20Formatter.svg)](https://packagecontrol.io/packages/uroboroSQL%20Formatter)    
 * IntelliJ   
-    [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/9614-intellij-uroborosql-formatter.svg)](https://plugins.jetbrains.com/plugin/9614-intellij-uroborosql-formatter)   
+    [![JetBrains plugins](https://img.shields.io/jetbrains/plugin/v/9614.svg) ![JetBrains plugins](https://img.shields.io/jetbrains/plugin/d/9614.svg)](https://plugins.jetbrains.com/plugin/9614)   
 * Eclipse  
-    [![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/dt/eclipse-uroborosql-formatter.svg)](https://marketplace.eclipse.org/content/eclipse-uroborosql-formatter)    
+    [![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/v/eclipse-uroborosql-formatter.svg) ![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/dt/eclipse-uroborosql-formatter.svg)](https://marketplace.eclipse.org/content/eclipse-uroborosql-formatter)    
 
-
-https://img.shields.io/eclipse-marketplace/dt/eclipse-uroborosql-formatter.svg
 
 uroboroSQL formatterは、フューチャーアーキテクトが作成するSQLコーディング規約に従い、SQL文を整形するツールです。  
 SQL文のインデント、改行、大文字・小文字の区分などを即時変換し、可読性・管理性を高めます。
