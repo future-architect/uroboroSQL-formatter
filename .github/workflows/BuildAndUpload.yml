@@ -60,7 +60,7 @@ jobs:
         run: |+
           make build
           cd dist
-          zip -r usqlfmt_linux.zip usqlfmt
+          zip usqlfmt_linux.zip usqlfmt
           ls
       - name: Upload
         run: |+
@@ -96,7 +96,7 @@ jobs:
         run: |+
           make build
           cd dist
-          zip -r usqlfmt_mac.zip usqlfmt
+          zip usqlfmt_mac.zip usqlfmt
           ls
       - name: Upload
         run: |+
