@@ -32,7 +32,7 @@ jobs:
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
-          git push origin --force bin
+          git push "https://%GITHUB_ACTOR%:%GITHUB_TOKEN%@github.com/future-architect/uroboroSQL-formatter.git" --force bin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   for-mac:
@@ -62,7 +62,7 @@ jobs:
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
-          git push origin bin
+          git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/future-architect/uroboroSQL-formatter.git bin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   for-linux:
@@ -92,6 +92,6 @@ jobs:
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
-          git push origin bin
+          git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/future-architect/uroboroSQL-formatter.git bin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
