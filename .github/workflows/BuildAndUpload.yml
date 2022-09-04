@@ -25,6 +25,8 @@ jobs:
           mkdir wk_repo
           cp dist/usqlfmt.exe wk_repo
           cd wk_repo
+          git config user.name %GITHUB_ACTOR%
+          git config user.email %GITHUB_ACTOR%@users.noreply.github.com
           git init
           git checkout --orphan bin
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
@@ -50,6 +52,8 @@ jobs:
         run: |+
           mkdir wk_repo
           cd wk_repo
+          git config user.name ${GITHUB_ACTOR}
+          git config user.email ${GITHUB_ACTOR}@users.noreply.github.com
           git init
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git checkout bin
@@ -76,6 +80,8 @@ jobs:
         run: |+
           mkdir wk_repo
           cd wk_repo
+          git config user.name ${GITHUB_ACTOR}
+          git config user.email ${GITHUB_ACTOR}@users.noreply.github.com
           git init
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git checkout bin
