@@ -30,7 +30,7 @@ jobs:
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git add --all
           git commit -m "commit"
-          git push origin --force HEAD:bin
+          git push origin --force bin
   for-mac:
     needs: for-win
     runs-on: macos-latest
@@ -56,7 +56,7 @@ jobs:
           cp ../dist/usqlfmt .
           git add --all
           git commit -m "commit"
-          git push origin HEAD:bin
+          git push origin bin
   for-linux:
     needs: [for-win, for-mac]
     runs-on: ubuntu-latest
@@ -82,4 +82,4 @@ jobs:
           cp ../dist/usqlfmt .
           git add --all
           git commit -m "commit"
-          git push origin HEAD:bin
+          git push origin bin
