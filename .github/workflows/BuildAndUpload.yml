@@ -22,7 +22,7 @@ jobs:
         run: make build
       - name: Upload
         run: |+
-          mkdir wk_repo
+          mkdir -p wk_repo
           cp dist/usqlfmt.exe wk_repo
           cd wk_repo
           git init
