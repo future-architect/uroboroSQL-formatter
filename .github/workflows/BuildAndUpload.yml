@@ -1,0 +1,82 @@
+name: Build binary and upload bin branch
+
+on:
+  push:
+    branches: [ master, dev ]
+  workflow_dispatch:
+
+jobs:
+  for-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Python version
+        run: python -V
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: make build
+      - name: Upload
+        run: |+
+          mkdir wk_repo
+          cp usqlfmt.exe wk_repo
+          cd wk_repo
+          git init
+          git checkout --orphan bin
+          git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
+          git add --all
+          git push origin --force bin
+  for-mac:
+    needs: for-win
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Python version
+        run: python -V
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: make build
+      - name: Upload
+        run: |+
+          mkdir wk_repo
+          cd wk_repo
+          git init
+          git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
+          git checkout bin
+          cp ../usqlfmt .
+          git add --all
+          git push origin bin
+  for-linux:
+    needs: [for-win, for-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Python version
+        run: python -V
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: make build
+      - name: Upload
+        run: |+
+          mkdir wk_repo
+          cd wk_repo
+          git init
+          git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
+          git checkout bin
+          cp ../usqlfmt .
+          git add --all
+          git push origin bin
