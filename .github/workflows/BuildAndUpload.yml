@@ -1,0 +1,117 @@
+name: Build binary and upload bin branch
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  for-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Python version
+        run: python -V
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: |+
+          make build
+          cd dist
+          ls
+      - name: Upload
+        run: |+
+          mkdir -p wk_repo
+          cp dist/usqlfmt.exe wk_repo
+          cd wk_repo
+          git init
+          git checkout --orphan bin
+          git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
+          git add --all
+          git config user.name Future-Corporation
+          git config user.email Future-Corporation@users.noreply.github.com
+          git commit -m "commit"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bin
+          force: true
+          directory: wk_repo
+          repository: future-architect/uroboroSQL-formatter
+  for-linux:
+    needs: [for-win]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Python version
+        run: python -V
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: |+
+          make build
+          cd dist
+          zip usqlfmt_linux.zip usqlfmt
+          ls
+      - name: Upload
+        run: |+
+          git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
+          cp dist/usqlfmt_linux.zip wk_repo
+          cd wk_repo
+          ls
+          git add --all
+          git config user.name Future-Corporation
+          git config user.email Future-Corporation@users.noreply.github.com
+          git commit -m "commit"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bin
+          directory: wk_repo
+          repository: future-architect/uroboroSQL-formatter
+  for-mac:
+    needs: [for-win, for-linux]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Python version
+        run: python -V
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+      - name: Build
+        run: |+
+          make build
+          cd dist
+          zip usqlfmt_mac.zip usqlfmt
+          ls
+      - name: Upload
+        run: |+
+          git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
+          cp dist/usqlfmt_mac.zip wk_repo
+          cd wk_repo
+          ls
+          git add --all
+          git config user.name Future-Corporation
+          git config user.email Future-Corporation@users.noreply.github.com
+          git commit -m "commit"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bin
+          directory: wk_repo
+          repository: future-architect/uroboroSQL-formatter
