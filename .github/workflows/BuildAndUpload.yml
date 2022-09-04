@@ -32,9 +32,14 @@ jobs:
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
-          git push "https://x-access-token:%GITHUB_TOKEN%@github.com/future-architect/uroboroSQL-formatter.git" --force bin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bin
+          force: true
+          directory: wk_repo
+          repository: future-architect/uroboroSQL-formatter
   for-mac:
     needs: for-win
     runs-on: macos-latest
@@ -62,9 +67,13 @@ jobs:
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/future-architect/uroboroSQL-formatter.git bin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bin
+          directory: wk_repo
+          repository: future-architect/uroboroSQL-formatter
   for-linux:
     needs: [for-win, for-mac]
     runs-on: ubuntu-latest
@@ -92,6 +101,10 @@ jobs:
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/future-architect/uroboroSQL-formatter.git bin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bin
+          directory: wk_repo
+          repository: future-architect/uroboroSQL-formatter
