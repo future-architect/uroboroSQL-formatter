@@ -22,7 +22,6 @@ jobs:
         run: make build
       - name: Upload
         run: |+
-          ls
           mkdir wk_repo
           cp dist/usqlfmt.exe wk_repo
           cd wk_repo
@@ -30,6 +29,7 @@ jobs:
           git checkout --orphan bin
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git add --all
+          git commit -m "commit"
           git push origin --force HEAD:bin
   for-mac:
     needs: for-win
@@ -48,7 +48,6 @@ jobs:
         run: make build
       - name: Upload
         run: |+
-          ls
           mkdir wk_repo
           cd wk_repo
           git init
@@ -56,6 +55,7 @@ jobs:
           git checkout bin
           cp ../dist/usqlfmt .
           git add --all
+          git commit -m "commit"
           git push origin HEAD:bin
   for-linux:
     needs: [for-win, for-mac]
@@ -74,7 +74,6 @@ jobs:
         run: make build
       - name: Upload
         run: |+
-          ls
           mkdir wk_repo
           cd wk_repo
           git init
@@ -82,4 +81,5 @@ jobs:
           git checkout bin
           cp ../dist/usqlfmt .
           git add --all
+          git commit -m "commit"
           git push origin HEAD:bin
