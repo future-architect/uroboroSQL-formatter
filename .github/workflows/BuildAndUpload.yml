@@ -59,12 +59,13 @@ jobs:
       - name: Build
         run: |+
           make build
+          zip -r dist/usqlfmt_linux.zip dist/usqlfmt
           cd dist
           ls
       - name: Upload
         run: |+
           git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
-          cp dist/usqlfmt wk_repo
+          cp dist/usqlfmt_linux.zip wk_repo
           cd wk_repo
           ls
           git add --all
@@ -94,12 +95,13 @@ jobs:
       - name: Build
         run: |+
           make build
+          zip -r dist/usqlfmt_mac.zip dist/usqlfmt
           cd dist
           ls
       - name: Upload
         run: |+
           git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
-          cp dist/usqlfmt wk_repo
+          cp dist/usqlfmt_mac.zip wk_repo
           cd wk_repo
           ls
           git add --all
