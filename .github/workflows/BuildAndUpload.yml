@@ -22,6 +22,7 @@ jobs:
         run: make build
       - name: Upload
         run: |+
+          ls
           mkdir wk_repo
           cp usqlfmt.exe wk_repo
           cd wk_repo
@@ -48,6 +49,7 @@ jobs:
         run: make build
       - name: Upload
         run: |+
+          ls
           mkdir wk_repo
           cd wk_repo
           git init
@@ -74,6 +76,7 @@ jobs:
         run: make build
       - name: Upload
         run: |+
+          ls
           mkdir wk_repo
           cd wk_repo
           git init
