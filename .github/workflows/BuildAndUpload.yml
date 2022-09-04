@@ -19,7 +19,10 @@ jobs:
       - name: Install pyinstaller
         run: pip install pyinstaller
       - name: Build
-        run: make build
+        run: |+
+          make build
+          cd dist
+          ls
       - name: Upload
         run: |+
           mkdir -p wk_repo
@@ -40,9 +43,9 @@ jobs:
           force: true
           directory: wk_repo
           repository: future-architect/uroboroSQL-formatter
-  for-mac:
-    needs: for-win
-    runs-on: macos-latest
+  for-linux:
+    needs: [for-win]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -54,11 +57,14 @@ jobs:
       - name: Install pyinstaller
         run: pip install pyinstaller
       - name: Build
-        run: make build
+        run: |+
+          make build
+          cd dist
+          ls
       - name: Upload
         run: |+
           git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
-          cp ./dist ./wk_repo
+          cp dist/usqlfmt wk_repo
           cd wk_repo
           ls
           git add --all
@@ -72,9 +78,9 @@ jobs:
           branch: bin
           directory: wk_repo
           repository: future-architect/uroboroSQL-formatter
-  for-linux:
-    needs: [for-win, for-mac]
-    runs-on: ubuntu-latest
+  for-mac:
+    needs: [for-win, for-linux]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
@@ -86,11 +92,14 @@ jobs:
       - name: Install pyinstaller
         run: pip install pyinstaller
       - name: Build
-        run: make build
+        run: |+
+          make build
+          cd dist
+          ls
       - name: Upload
         run: |+
           git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
-          cp ./dist ./wk_repo
+          cp dist/usqlfmt wk_repo
           cd wk_repo
           ls
           git add --all
