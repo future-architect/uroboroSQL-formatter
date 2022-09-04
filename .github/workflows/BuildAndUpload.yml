@@ -29,8 +29,8 @@ jobs:
           git checkout --orphan bin
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git add --all
-          git config user.name future-architect
-          git config user.email future-architect@users.noreply.github.com
+          git config user.name Future-Corporation
+          git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
           git push origin --force bin
   for-mac:
@@ -57,8 +57,8 @@ jobs:
           git checkout bin
           cp ../dist/usqlfmt .
           git add --all
-          git config user.name future-architect
-          git config user.email future-architect@users.noreply.github.com
+          git config user.name Future-Corporation
+          git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
           git push origin bin
   for-linux:
@@ -85,7 +85,7 @@ jobs:
           git checkout bin
           cp ../dist/usqlfmt .
           git add --all
-          git config user.name future-architect
-          git config user.email future-architect@users.noreply.github.com
+          git config user.name Future-Corporation
+          git config user.email Future-Corporation@users.noreply.github.com
           git commit -m "commit"
           git push origin bin
