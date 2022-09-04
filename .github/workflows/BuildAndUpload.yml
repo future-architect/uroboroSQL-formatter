@@ -24,7 +24,7 @@ jobs:
         run: |+
           ls
           mkdir wk_repo
-          cp usqlfmt.exe wk_repo
+          cp dist/usqlfmt.exe wk_repo
           cd wk_repo
           git init
           git checkout --orphan bin
@@ -32,7 +32,6 @@ jobs:
           git add --all
           git push origin --force bin
   for-mac:
-    if: ${{ always() }}
     needs: for-win
     runs-on: macos-latest
     steps:
@@ -55,11 +54,10 @@ jobs:
           git init
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git checkout bin
-          cp ../usqlfmt .
+          cp ../dist/usqlfmt .
           git add --all
           git push origin bin
   for-linux:
-    if: ${{ always() }}
     needs: [for-win, for-mac]
     runs-on: ubuntu-latest
     steps:
@@ -82,6 +80,6 @@ jobs:
           git init
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git checkout bin
-          cp ../usqlfmt .
+          cp ../dist/usqlfmt .
           git add --all
           git push origin bin
