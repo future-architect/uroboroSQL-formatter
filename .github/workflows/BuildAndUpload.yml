@@ -25,12 +25,12 @@ jobs:
           mkdir wk_repo
           cp dist/usqlfmt.exe wk_repo
           cd wk_repo
-          git config user.name future-architect
-          git config user.email future-architect@users.noreply.github.com
           git init
           git checkout --orphan bin
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git add --all
+          git config user.name future-architect
+          git config user.email future-architect@users.noreply.github.com
           git commit -m "commit"
           git push origin --force bin
   for-mac:
@@ -52,13 +52,13 @@ jobs:
         run: |+
           mkdir wk_repo
           cd wk_repo
-          git config user.name future-architect
-          git config user.email future-architect@users.noreply.github.com
           git init
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git checkout bin
           cp ../dist/usqlfmt .
           git add --all
+          git config user.name future-architect
+          git config user.email future-architect@users.noreply.github.com
           git commit -m "commit"
           git push origin bin
   for-linux:
@@ -80,12 +80,12 @@ jobs:
         run: |+
           mkdir wk_repo
           cd wk_repo
-          git config user.name future-architect
-          git config user.email future-architect@users.noreply.github.com
           git init
           git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
           git checkout bin
           cp ../dist/usqlfmt .
           git add --all
+          git config user.name future-architect
+          git config user.email future-architect@users.noreply.github.com
           git commit -m "commit"
           git push origin bin
