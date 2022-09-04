@@ -59,8 +59,8 @@ jobs:
       - name: Build
         run: |+
           make build
-          zip -r dist/usqlfmt_linux.zip dist/usqlfmt
           cd dist
+          zip -r usqlfmt_linux.zip usqlfmt
           ls
       - name: Upload
         run: |+
@@ -95,8 +95,8 @@ jobs:
       - name: Build
         run: |+
           make build
-          zip -r dist/usqlfmt_mac.zip dist/usqlfmt
           cd dist
+          zip -r usqlfmt_mac.zip usqlfmt
           ls
       - name: Upload
         run: |+
