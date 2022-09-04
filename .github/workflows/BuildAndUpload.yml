@@ -57,12 +57,10 @@ jobs:
         run: make build
       - name: Upload
         run: |+
-          mkdir wk_repo
+          git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
+          cp ./dist ./wk_repo
           cd wk_repo
-          git init
-          git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
-          git checkout bin
-          cp ../dist/usqlfmt .
+          ls
           git add --all
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
@@ -91,12 +89,10 @@ jobs:
         run: make build
       - name: Upload
         run: |+
-          mkdir wk_repo
+          git clone -b bin https://github.com/future-architect/uroboroSQL-formatter.git wk_repo
+          cp ./dist ./wk_repo
           cd wk_repo
-          git init
-          git remote add origin https://github.com/future-architect/uroboroSQL-formatter.git
-          git checkout bin
-          cp ../dist/usqlfmt .
+          ls
           git add --all
           git config user.name Future-Corporation
           git config user.email Future-Corporation@users.noreply.github.com
