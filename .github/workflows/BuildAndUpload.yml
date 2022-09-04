@@ -2,7 +2,7 @@ name: Build binary and upload bin branch
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
