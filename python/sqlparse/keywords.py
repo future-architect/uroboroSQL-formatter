@@ -350,6 +350,7 @@ KEYWORDS = {
     'RESTRICT': tokens.Keyword,
     'RESULT': tokens.Keyword,
     'RETURN': tokens.Keyword,
+    'RETURNING': tokens.Keyword,
     'RETURNED_LENGTH': tokens.Keyword,
     'RETURNED_OCTET_LENGTH': tokens.Keyword,
     'RETURNED_SQLSTATE': tokens.Keyword,

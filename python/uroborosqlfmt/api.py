@@ -123,7 +123,7 @@ def __decode(text):
 def _parse_args(test_args=None):
     parser = argparse.ArgumentParser(description='uroboroSQL formatter API', prog='usqlfmt')
 
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.1.0')
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.1.4')
     parser.add_argument('input_path', \
         action='store', \
         type=str, \
