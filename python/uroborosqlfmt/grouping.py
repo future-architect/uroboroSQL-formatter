@@ -429,7 +429,7 @@ class _SimpleWordsTokenHitTests(_WordsTokenHitTests):
             return lambda t: self._test_word(jdg, t)
         elif isinstance(jdg, type(T.Token)):
             return lambda t: t.ttype in jdg
-        elif isinstance(jdg, collections.Iterable):
+        elif isinstance(jdg, collections.abc.Iterable):
             def itr_hit_test(tkn):
                 for elm in jdg:
                     if self.__to_hit_test(elm)(tkn):

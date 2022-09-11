@@ -81,6 +81,18 @@ SELECT * FROM tab2 ORDER BY c02 FETCH FIRST 50 PERCENT ROWS ONLY
       ( select * from staff T2 where T1.staff_id = T2.manager_id)
         """), u'SELECT\n\t*\nFROM\n\tSTAFF\tT1\nWHERE\n\tNOT\tEXISTS(\n\t\tSELECT\n\t\t\t*\n\t\tFROM\n\t\t\tSTAFF\tT2\n\t\tWHERE\n\t\t\tT1.STAFF_ID\t=\tT2.MANAGER_ID\n\t)') # pylint: disable=line-too-long
 
+    # Returning句のテスト
+    def test7(self):
+        self.assertEqual(format_sql(u"""
+    UPDATE products SET price = price * 1.10
+  WHERE price <= 99.99 RETURNING name, price AS new_price;
+        """), u'UPDATE\n\tPRODUCTS\nSET\tPRICE\t=\tPRICE\t*\t1.10\nWHERE\n\tPRICE\t<=\t99.99\nRETURNING\n\tNAME\n,\tPRICE\tAS\tNEW_PRICE\n;\n') # pylint: disable=line-too-long
+        self.assertEqual(format_sql(u"""
+   INSERT INTO users (firstname, lastname) VALUES ('Joe', 'Cool') RETURNING id, firstname, lastname;
+        """), u"""INSERT\nINTO\n\tUSERS\n(\n\tFIRSTNAME\n,\tLASTNAME\n) VALUES (\n\t'Joe'\n,\t'Cool'\n)\nRETURNING\n\tID\n,\tFIRSTNAME\n,\tLASTNAME\n;\n""") # pylint: disable=line-too-long
+        self.assertEqual(format_sql(u"""
+   DELETE FROM products WHERE obsoletion_date = 'today' RETURNING *;
+        """), u"""DELETE\nFROM\n\tPRODUCTS\nWHERE\n\tOBSOLETION_DATE\t=\t'today'\nRETURNING\t*\n;\n""") # pylint: disable=line-too-long
 
 
 def format_sql(text):

@@ -86,7 +86,7 @@ class LexerMeta(type):
                                   " %r of %r: %s"
                                   % (tdef[0], state, cls, err)))
 
-            assert type(tdef[1]) is tokens._TokenType or isinstance(tdef[1], collections.Callable), \
+            assert type(tdef[1]) is tokens._TokenType or isinstance(tdef[1], collections.abc.Callable), \
                    ('token type must be simple type or callable, not %r'
                     % (tdef[1],))
 
