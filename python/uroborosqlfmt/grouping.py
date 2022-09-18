@@ -10,6 +10,12 @@ from uroborosqlfmt.sql import WithinGroupFunctions, Phrase, AscDesc, OffsetFetch
     StartWith, With, LimitOffset, SpecialFunctionParameter, Calculation
 from uroborosqlfmt.exceptions import SqlFormatterException
 
+try:
+    collections.Iterable = collections.abc.Iterable
+except AttributeError:
+    # compatible for Python 3.10~
+    pass
+
 def _remove_split_token(token, new_parent):
     parent = token.parent
     tokens = []
@@ -429,7 +435,7 @@ class _SimpleWordsTokenHitTests(_WordsTokenHitTests):
             return lambda t: self._test_word(jdg, t)
         elif isinstance(jdg, type(T.Token)):
             return lambda t: t.ttype in jdg
-        elif isinstance(jdg, collections.abc.Iterable):
+        elif isinstance(jdg, collections.Iterable):
             def itr_hit_test(tkn):
                 for elm in jdg:
                     if self.__to_hit_test(elm)(tkn):

@@ -19,6 +19,12 @@ from sqlparse import tokens
 from sqlparse.keywords import KEYWORDS, KEYWORDS_COMMON
 import collections
 
+try:
+    collections.Callable = collections.abc.Callable
+except AttributeError:
+    # compatible for Python 3.10~
+    pass
+
 
 class include(str):
     pass
@@ -86,7 +92,7 @@ class LexerMeta(type):
                                   " %r of %r: %s"
                                   % (tdef[0], state, cls, err)))
 
-            assert type(tdef[1]) is tokens._TokenType or isinstance(tdef[1], collections.abc.Callable), \
+            assert type(tdef[1]) is tokens._TokenType or isinstance(tdef[1], collections.Callable), \
                    ('token type must be simple type or callable, not %r'
                     % (tdef[1],))
 
