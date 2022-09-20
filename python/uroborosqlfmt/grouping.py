@@ -10,6 +10,12 @@ from uroborosqlfmt.sql import WithinGroupFunctions, Phrase, AscDesc, OffsetFetch
     StartWith, With, LimitOffset, SpecialFunctionParameter, Calculation
 from uroborosqlfmt.exceptions import SqlFormatterException
 
+try:
+    collections.Iterable = collections.abc.Iterable
+except AttributeError:
+    # compatible for Python 3.10~
+    pass
+
 def _remove_split_token(token, new_parent):
     parent = token.parent
     tokens = []

@@ -19,6 +19,12 @@ from sqlparse import tokens
 from sqlparse.keywords import KEYWORDS, KEYWORDS_COMMON
 import collections
 
+try:
+    collections.Callable = collections.abc.Callable
+except AttributeError:
+    # compatible for Python 3.10~
+    pass
+
 
 class include(str):
     pass
