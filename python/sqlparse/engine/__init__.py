@@ -4,6 +4,7 @@
 # the BSD License: http://www.opensource.org/licenses/bsd-license.php.
 
 """filter"""
+
 from sqlparse import lexer
 from sqlparse.engine import grouping
 from sqlparse.engine.filter import StatementFilter
