@@ -77,13 +77,22 @@ class StatementFilter:
         splitlevel = 0
         stmt = None
         stmt_tokens = []
+        stmt_cnt = 0
 
         # Run over all stream tokens
         for ttype, value in stream:
             # Yield token if we finished a statement and there's no whitespaces
             if consume_ws and ttype not in (T.Whitespace, T.Comment.Single):
+                if stmt_cnt > 0:
+                    cr_tokens = [Token(T.Whitespace.Newline, "\n")]
+                    crstmt = Statement()
+                    crstmt.tokens = cr_tokens
+                    yield crstmt
+
                 stmt.tokens = stmt_tokens
                 yield stmt
+
+                stmt_cnt += 1
 
                 # Reset filter and prepare to process next statement
                 self._reset()

@@ -94,6 +94,20 @@ SELECT * FROM tab2 ORDER BY c02 FETCH FIRST 50 PERCENT ROWS ONLY
    DELETE FROM products WHERE obsoletion_date = 'today' RETURNING *;
         """), u"""DELETE\nFROM\n\tPRODUCTS\nWHERE\n\tOBSOLETION_DATE\t=\t'today'\nRETURNING\t*\n;\n""") # pylint: disable=line-too-long
 
+    # Multiple SQL in a file.
+    def test7(self):
+        # two sql
+        self.assertEqual(format_sql(u"""
+    select * from users;
+    select * from product;
+    """), u'SELECT\n\t*\nFROM\n\tUSERS\n;\n\nSELECT\n\t*\nFROM\n\tPRODUCT\n;\n')
+
+        # three sql
+        self.assertEqual(format_sql(u"""
+    select * from users;
+    select * from product;
+    select * from area;
+    """), u'SELECT\n\t*\nFROM\n\tUSERS\n;\n\nSELECT\n\t*\nFROM\n\tPRODUCT\n;\n\nSELECT\n\t*\nFROM\n\tAREA\n;\n')
 
 def format_sql(text):
     formated = uroborosqlfmt.format_sql(text, LocalConfig())
